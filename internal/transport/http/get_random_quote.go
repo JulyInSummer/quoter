@@ -27,6 +27,6 @@ func (s *Server) GetRandomQuote(w http.ResponseWriter, r *http.Request) error {
 		Quote:  quote.Quote,
 	}
 
-	http_utils.JSON(w, resp)
+	http_utils.JSON(w, http.StatusOK, resp)
 	return nil
 }
