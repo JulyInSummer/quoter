@@ -1,0 +1,10 @@
+services:
+  quotes_db:
+    image: postgres:latest
+    container_name: quotes_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=quoter
+      - POSTGRES_USER=quoter
+      - POSTGRES_DB=quoter_db
