@@ -1,8 +1,6 @@
 package http
 
 import (
-	"database/sql"
-	"errors"
 	"github.com/JulyInSummer/quoter_app/internal/transport/http/resources"
 	http_utils "github.com/JulyInSummer/quoter_app/utils/http"
 	"log/slog"
@@ -15,13 +13,15 @@ func (s *Server) GetAllQuotes(w http.ResponseWriter, r *http.Request) error {
 
 	s.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
 
-	quotes, err := s.service.GetAllQuotes(ctx)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	author := r.URL.Query().Get("author")
+
+	quotes, err := s.service.GetAllQuotes(ctx, author)
+	if err != nil {
 		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		return err
 	}
 
-	var resp []resources.QuoteResponse
+	resp := make([]resources.QuoteResponse, 0)
 	for _, quote := range quotes {
 		resp = append(resp, resources.QuoteResponse{
 			ID:     quote.ID,

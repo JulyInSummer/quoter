@@ -6,16 +6,16 @@ import (
 	"log/slog"
 )
 
-func (q *quoteStorage) GetAllQuotes(ctx context.Context) ([]models.Quote, error) {
+func (q *quoteStorage) GetAllQuotes(ctx context.Context, author string) ([]models.Quote, error) {
 	method := "quoteStorage.GetAllQuotes"
 
 	q.logger.DebugContext(ctx, method)
 
-	query := `select id, author, quote from quotes order by id desc`
+	query := `select id, author, quote from quotes where $1 = '' or $1 = author order by id desc`
 
 	var res []models.Quote
 
-	rows, err := q.db.QueryContext(ctx, query)
+	rows, err := q.db.QueryContext(ctx, query, author)
 	if err != nil {
 		q.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		return nil, err
