@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"github.com/JulyInSummer/quoter_app/internal/config"
 	"github.com/JulyInSummer/quoter_app/internal/transport/http/resources"
 	http_utils "github.com/JulyInSummer/quoter_app/utils/http"
 	"io"
@@ -24,7 +25,7 @@ func (s *Server) CreateQuote(w http.ResponseWriter, r *http.Request) error {
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
-		http_utils.HandleBadRequest(w)
+		http_utils.HandleBadRequest(w, config.HTTPInvalidBodyMessage)
 	}
 
 	errors := req.Validate()
@@ -46,6 +47,6 @@ func (s *Server) CreateQuote(w http.ResponseWriter, r *http.Request) error {
 		Quote:  quote.Quote,
 	}
 
-	http_utils.JSON(w, resp)
+	http_utils.JSON(w, http.StatusCreated, resp)
 	return nil
 }
