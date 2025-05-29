@@ -1,5 +1,5 @@
 package config
 
 const (
-	IncomingRequest = "incoming_request"
+	HTTPInvalidBodyMessage = "Invalid body. Please provide a valid JSON."
 )
