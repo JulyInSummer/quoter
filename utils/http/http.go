@@ -78,6 +78,19 @@ func HandleBadRequest(w http.ResponseWriter, message string) {
 	write(w, content)
 }
 
+// HandleNotFound writes status code 404
+func HandleNotFound(w http.ResponseWriter, message string) {
+	setHeaders(w)
+	w.WriteHeader(http.StatusNotFound)
+
+	content := response{
+		Code: http.StatusNotFound,
+		Data: message,
+	}
+
+	write(w, content)
+}
+
 func setHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 }
