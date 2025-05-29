@@ -30,6 +30,6 @@ func (s *Server) GetAllQuotes(w http.ResponseWriter, r *http.Request) error {
 		})
 	}
 
-	http_utils.JSON(w, resp)
+	http_utils.JSON(w, http.StatusOK, resp)
 	return nil
 }
