@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"github.com/JulyInSummer/quoter_app/internal/config"
 	http_utils "github.com/JulyInSummer/quoter_app/utils/http"
 	"log/slog"
@@ -32,6 +33,10 @@ func (s *Server) DeleteQuote(w http.ResponseWriter, r *http.Request) error {
 	err = s.service.DeleteQuote(ctx, quoteID)
 	if err != nil {
 		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		if errors.Is(err, config.QuoteDoesNotExistError) {
+			http_utils.HandleNotFound(w, config.HTTPNotFoundMessage)
+			return nil
+		}
 		return err
 	}
 
