@@ -32,8 +32,7 @@ func Handle(handler func(w http.ResponseWriter, r *http.Request) error) http.Han
 		setHeaders(w)
 		err := handler(w, r)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Internal server error"))
+			HandleInternalError(w)
 			return
 		}
 	}
