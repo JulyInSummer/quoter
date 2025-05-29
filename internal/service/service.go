@@ -11,6 +11,7 @@ type QuoterI interface {
 	CreateQuote(ctx context.Context, quote domain.Quote) (*domain.Quote, error)
 	GetRandomQuote(ctx context.Context) (*domain.Quote, error)
 	GetAllQuotes(ctx context.Context, author string) ([]domain.Quote, error)
+	DeleteQuote(ctx context.Context, id int) error
 }
 
 type quoter struct {

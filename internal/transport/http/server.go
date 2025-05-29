@@ -33,6 +33,7 @@ func (s *Server) RegisterRoutes() *Server {
 	handler.HandleFunc("POST /quotes", http_utils.Handle(s.CreateQuote))
 	handler.HandleFunc("GET /quotes", http_utils.Handle(s.GetAllQuotes))
 	handler.HandleFunc("GET /quotes/random", http_utils.Handle(s.GetRandomQuote))
+	handler.HandleFunc("DELETE /quotes/{id}", http_utils.Handle(s.DeleteQuote))
 	s.serv.Handler = handler
 	return s
 }
