@@ -11,6 +11,12 @@ type response struct {
 	Data any `json:"data"`
 }
 
+type validationResponse struct {
+	Code   int      `json:"code"`
+	Data   any      `json:"data"`
+	Errors []string `json:"errors"`
+}
+
 // JSON writes a JSON http response with headers
 // and status code 200
 func JSON(w http.ResponseWriter, statusCode int, data any) {
@@ -42,10 +48,10 @@ func HandleValidationError(w http.ResponseWriter, errors []string) {
 	setHeaders(w)
 	w.WriteHeader(http.StatusUnprocessableEntity)
 
-	content := map[string]any{
-		"code":   http.StatusUnprocessableEntity,
-		"data":   "Validation error",
-		"errors": errors,
+	content := validationResponse{
+		Code:   http.StatusUnprocessableEntity,
+		Data:   "Validation error",
+		Errors: errors,
 	}
 
 	write(w, content)
@@ -58,7 +64,7 @@ func HandleInternalError(w http.ResponseWriter) {
 
 	content := response{
 		Code: http.StatusInternalServerError,
-		Data: "Internal server error",
+		Data: "Internal Server Error",
 	}
 
 	write(w, content)
