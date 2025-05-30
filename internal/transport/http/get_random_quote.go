@@ -9,15 +9,15 @@ import (
 	"net/http"
 )
 
-func (s *Server) GetRandomQuote(w http.ResponseWriter, r *http.Request) error {
-	method := "Server.GetRandomQuote"
+func (h *Handler) GetRandomQuote(w http.ResponseWriter, r *http.Request) error {
+	method := "Handler.GetRandomQuote"
 	ctx := r.Context()
 
-	s.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
+	h.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
 
-	quote, err := s.service.GetRandomQuote(ctx)
+	quote, err := h.service.GetRandomQuote(ctx)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		return err
 	}
 

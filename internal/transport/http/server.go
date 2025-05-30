@@ -8,18 +8,21 @@ import (
 )
 
 type Server struct {
-	serv    *http.Server
-	logger  *slog.Logger
-	service service.QuoterI
+	serv *http.Server
 }
 
-func NewServer(address string, logger *slog.Logger, service service.QuoterI) *Server {
+type Handler struct {
+	logger  *slog.Logger
+	service service.QuoterI
+	router  *http.ServeMux
+}
+
+func NewServer(address string, handler *Handler) *Server {
 	return &Server{
 		serv: &http.Server{
-			Addr: address,
+			Addr:    address,
+			Handler: handler.router,
 		},
-		logger:  logger,
-		service: service,
 	}
 }
 
@@ -27,13 +30,20 @@ func (s *Server) Run() error {
 	return s.serv.ListenAndServe()
 }
 
-func (s *Server) RegisterRoutes() *Server {
+func NewHandler(logger *slog.Logger, service service.QuoterI) *Handler {
+	h := &Handler{
+		logger:  logger,
+		service: service,
+	}
+
 	handler := http.NewServeMux()
 
-	handler.HandleFunc("POST /quotes", http_utils.Handle(s.CreateQuote))
-	handler.HandleFunc("GET /quotes", http_utils.Handle(s.GetAllQuotes))
-	handler.HandleFunc("GET /quotes/random", http_utils.Handle(s.GetRandomQuote))
-	handler.HandleFunc("DELETE /quotes/{id}", http_utils.Handle(s.DeleteQuote))
-	s.serv.Handler = handler
-	return s
+	handler.HandleFunc("POST /quotes", http_utils.Handle(h.CreateQuote))
+	handler.HandleFunc("GET /quotes", http_utils.Handle(h.GetAllQuotes))
+	handler.HandleFunc("GET /quotes/random", http_utils.Handle(h.GetRandomQuote))
+	handler.HandleFunc("DELETE /quotes/{id}", http_utils.Handle(h.DeleteQuote))
+
+	h.router = handler
+
+	return h
 }

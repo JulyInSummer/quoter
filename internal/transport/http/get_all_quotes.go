@@ -7,17 +7,17 @@ import (
 	"net/http"
 )
 
-func (s *Server) GetAllQuotes(w http.ResponseWriter, r *http.Request) error {
-	method := "Server.GetAllQuotes"
+func (h *Handler) GetAllQuotes(w http.ResponseWriter, r *http.Request) error {
+	method := "Handler.GetAllQuotes"
 	ctx := r.Context()
 
-	s.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
+	h.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
 
 	author := r.URL.Query().Get("author")
 
-	quotes, err := s.service.GetAllQuotes(ctx, author)
+	quotes, err := h.service.GetAllQuotes(ctx, author)
 	if err != nil {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		return err
 	}
 

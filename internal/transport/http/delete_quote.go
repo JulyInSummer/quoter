@@ -9,30 +9,30 @@ import (
 	"strconv"
 )
 
-func (s *Server) DeleteQuote(w http.ResponseWriter, r *http.Request) error {
-	method := "Server.DeleteQuote"
+func (h *Handler) DeleteQuote(w http.ResponseWriter, r *http.Request) error {
+	method := "Handler.DeleteQuote"
 	ctx := r.Context()
 
-	s.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
+	h.logger.InfoContext(ctx, method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
 
 	str := r.PathValue("id")
 
 	if str == "" {
-		s.logger.DebugContext(ctx, method, slog.String("id", str))
+		h.logger.DebugContext(ctx, method, slog.String("id", str))
 		http_utils.HandleNotFound(w, config.HTTPNotFoundMessage)
 		return nil
 	}
 
 	quoteID, err := strconv.Atoi(str)
 	if err != nil {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		http_utils.HandleBadRequest(w, config.HTTPInvalidPathParameterMessage)
 		return nil
 	}
 
-	err = s.service.DeleteQuote(ctx, quoteID)
+	err = h.service.DeleteQuote(ctx, quoteID)
 	if err != nil {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		if errors.Is(err, config.QuoteDoesNotExistError) {
 			http_utils.HandleNotFound(w, config.HTTPNotFoundMessage)
 			return nil

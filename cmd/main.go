@@ -21,7 +21,11 @@ func main() {
 	// create the service layer
 	srvc := service.NewQuoteService(logger, strg)
 
-	server := http.NewServer(":8080", logger, srvc).RegisterRoutes()
+	// create handler
+	handler := http.NewHandler(logger, srvc)
+
+	// create server
+	server := http.NewServer(":8080", handler)
 
 	server.Run()
 }

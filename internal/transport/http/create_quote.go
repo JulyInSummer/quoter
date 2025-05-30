@@ -10,34 +10,34 @@ import (
 	"net/http"
 )
 
-func (s *Server) CreateQuote(w http.ResponseWriter, r *http.Request) error {
+func (h *Handler) CreateQuote(w http.ResponseWriter, r *http.Request) error {
 	method := "Server.CreateQuote"
 	ctx := r.Context()
-	s.logger.Info(method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
+	h.logger.Info(method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		return err
 	}
 
 	var req resources.CreateQuoteRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		http_utils.HandleBadRequest(w, config.HTTPInvalidBodyMessage)
 	}
 
 	errors := req.Validate()
 	if len(errors) > 0 {
-		s.logger.WarnContext(ctx, method+".Validation", slog.Any("errors", errors))
+		h.logger.WarnContext(ctx, method+".Validation", slog.Any("errors", errors))
 		http_utils.HandleValidationError(w, errors)
 		return nil
 	}
 
-	quote, err := s.service.CreateQuote(ctx, req.ToDomain())
+	quote, err := h.service.CreateQuote(ctx, req.ToDomain())
 	if err != nil {
-		s.logger.ErrorContext(ctx, method, slog.Any("error", err))
+		h.logger.ErrorContext(ctx, method, slog.Any("error", err))
 		return err
 	}
 
