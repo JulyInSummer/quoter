@@ -13,4 +13,7 @@ new-migration:
 migrate:
 	migrate -source file://${CURRENT_DIR}/migrations -database ${DATABASE_URL} -verbose up
 
+test:
+	go test -p 1 ./...
+
 .PHONY: migrate
