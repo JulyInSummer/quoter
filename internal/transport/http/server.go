@@ -5,6 +5,7 @@ import (
 	http_utils "github.com/JulyInSummer/quoter_app/utils/http"
 	"log/slog"
 	"net/http"
+	"time"
 )
 
 type Server struct {
@@ -20,8 +21,11 @@ type Handler struct {
 func NewServer(address string, handler *Handler) *Server {
 	return &Server{
 		serv: &http.Server{
-			Addr:    address,
-			Handler: handler.router,
+			Addr:         address,
+			Handler:      handler.router,
+			ReadTimeout:  15 * time.Second, // TODO: move to config file
+			WriteTimeout: 15 * time.Second, // TODO: move to config file
+			IdleTimeout:  60 * time.Second, // TODO: move to config file
 		},
 	}
 }
