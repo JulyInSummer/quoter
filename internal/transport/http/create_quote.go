@@ -11,7 +11,7 @@ import (
 )
 
 func (h *Handler) CreateQuote(w http.ResponseWriter, r *http.Request) error {
-	method := "Server.CreateQuote"
+	method := "Handler.CreateQuote"
 	ctx := r.Context()
 	h.logger.Info(method, slog.String("method", r.Method), slog.String("url", r.URL.String()))
 
